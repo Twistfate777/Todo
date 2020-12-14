@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="dkgray">#80808FF0</color>
+    <drawable name="yello">#F8F8FF00</drawable>
+    <drawable name="white">#FFFFFF</drawable>
+    <drawable name="darkgray">#938192</drawable>
+    <drawable name="lightgreen">#7cd12e</drawable>
+    <drawable name="black">#ff000000</drawable>
+    <color name="blue">#ff0000ff</color>
+    <drawable name="cyan">#ff00ffff</drawable>
+    <drawable name="gray">#ff888888</drawable>
+    <drawable name="green">#ff00ff00</drawable>
+    <drawable name="ltgray">#ffcccccc</drawable>
+    <drawable name="magenta">#ffff00ff</drawable>
+    <drawable name="red">#ffff0000</drawable>
+    <drawable name="transparent">#00000000</drawable>
+    <drawable name="yellow">#ffffff00</drawable>
+</resources>

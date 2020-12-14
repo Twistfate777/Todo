@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/all"
+        android:title="全部"></item>
+    <item android:id="@+id/today"
+        android:title="今日"
+        ></item>
+    <item
+        android:title="明日"
+        android:id="@+id/afterday">
+        </item>
+    <item
+        android:id="@+id/this_week"
+        android:title="本周"></item>
+    <item android:id="@+id/late"
+        android:title="稍后"></item>
+</menu>

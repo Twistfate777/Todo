@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.todo">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/logo_icon"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/logo_icon"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".DoneActivity">
+
+        </activity>
+        <activity android:name=".CommentActivity" />
+        <activity android:name=".SchedulaActivity" /> <!-- <activity android:name=".CardView"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.MAIN" /> -->
+        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+        <!-- </intent-filter> -->
+        <!-- </activity> -->
+        <meta-data
+            android:name="com.google.android.actions"
+            android:resource="@xml/actions" />
+
+        <activity android:name=".ImportantActivity" />
+        <activity android:name=".ThirdActivity" />
+        <activity android:name=".SecondActivity" />
+        <activity android:name=".TodayActivity" />
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <receiver android:name=".MyReceiver" />
+    </application>
+
+</manifest>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/rename"
+        android:title="重命名清单"
+        ></item>
+    <item
+        android:title="更换背景"
+        android:id="@+id/changeBG">
+        </item>
+    <item android:id="@+id/sort"
+        android:title="排序">
+        <menu>
+            <item android:id="@+id/sortByLen"
+                android:title="按名称长度">
+            </item>
+            <item android:id="@+id/sortByStart"
+                android:title="按首字母">
+            </item>
+        </menu>
+    </item>
+    <item android:id="@+id/deleteList"
+        android:title="删除清单"></item>
+</menu>

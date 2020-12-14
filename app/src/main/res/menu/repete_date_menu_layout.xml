@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/oneday"
+        android:title="每天"></item>
+    <item android:id="@+id/week"
+        android:title="每周"
+        ></item>
+    <item
+        android:title="每月"
+        android:id="@+id/month">
+    </item>
+</menu>
