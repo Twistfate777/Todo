@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="2"
-            android:background="@android:drawable/arrow_up_float"
+            android:background="@drawable/check_off"
             android:button="@null" />
 
     </LinearLayout>

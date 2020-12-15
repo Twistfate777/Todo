@@ -57,7 +57,6 @@ public class ThirdActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_third);
 
-
         final Intent intent = getIntent();
         task = (TodoTask) intent.getSerializableExtra("task");
 
@@ -68,22 +67,18 @@ public class ThirdActivity extends AppCompatActivity {
         sDao = listDataBase.mTodoStepDao();
 
 
-        //TODO : 动态加载 、添加监听者
+        //数据适配
         todoSteps = new ArrayList<TodoStep>();
         adapter = new TodoStepAdapter(todoSteps,R.layout.todo_step,null,null);
-
         list = findViewById(R.id.rv);
         list.setLayoutManager(new LinearLayoutManager(this));
         list.setAdapter(adapter);
-
-
+        //绑定back键
         ImageButton btn_back = findViewById(R.id.ThirdBack);
         final Intent backIntent = new Intent();
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                backIntent.putExtra("delete",false);
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -97,6 +92,7 @@ public class ThirdActivity extends AppCompatActivity {
             }
         });
 
+        //设置标题
         final TextView title = findViewById(R.id.listname);
         new Thread(new Runnable() {
             @Override
@@ -106,9 +102,9 @@ public class ThirdActivity extends AppCompatActivity {
             }
         }).start();
 
+        //设置任务名次
         final EditText taskEditor = findViewById(R.id.taskname);
         taskEditor.setText(task.name);
-
         taskEditor.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -116,6 +112,7 @@ public class ThirdActivity extends AppCompatActivity {
             }
         });
 
+        //重命名Task名字
         taskEditor.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -125,14 +122,13 @@ public class ThirdActivity extends AppCompatActivity {
                     String txt = taskEditor.getText().toString();
                     task.name = txt;
                     backIntent.putExtra("newTaskName",task.name);
-                    Log.d("SecondActivity", "onEditorAction: " + task.name);
                 }
                 return false;
             }
         });
 
 
-        //设置dd 初始文本
+        //设置"提醒我"初始文本
         dd = findViewById(R.id.dd);
         initialDpAndTp();
         dd.setOnClickListener(new View.OnClickListener() {
@@ -142,9 +138,9 @@ public class ThirdActivity extends AppCompatActivity {
 
             }
         });
-
+        //再此输入下一步
         initialInputNextStepBtn();
-
+        //设置添加到我的一天
         Button btn_add2Today = findViewById(R.id.add_to_today);
         btn_add2Today.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,14 +150,13 @@ public class ThirdActivity extends AppCompatActivity {
                     public void run() {
                         task.isToday = true;
                         dao.update(task);
-                        Log.d(TAG, "task = " + task.name + " isToday = " + task.isToday);
                     }
                 }).start();
                 Toast.makeText(ThirdActivity.this,"添加成功!",Toast.LENGTH_SHORT).show();
             }
         });
 
-
+        //检查数据库内是否有数据
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -200,7 +195,7 @@ public class ThirdActivity extends AppCompatActivity {
 
     }
 
-    //从数据库读取 step
+    //从数据库读取 step并添加到数据适配器内
     private void LoadStepsFromDB() {
         Thread t = new Thread(new Runnable() {
             @Override

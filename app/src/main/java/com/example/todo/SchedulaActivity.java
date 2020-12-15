@@ -180,4 +180,18 @@ public class SchedulaActivity extends AppCompatActivity implements CompoundButto
         return true;
     }
 
+
+        @Override
+        protected void onStop () {
+        super.onStop();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for(int i=0; i<list.size();i++){
+                    dao.update(list.get(i));
+                }
+            }
+        }).start();
+    }
+
 }

@@ -1,9 +1,6 @@
 package com.example.todo;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -26,10 +23,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -53,10 +50,10 @@ public class SecondActivity extends AppCompatActivity {
 
     static AlertDialog ddDialog;
 
-    private AlarmManagerUtils alarmManagerUtils;
+    private AlarmManagerUtils alarmManagerUtils;  //提醒服务
     CheckBox btn_setdd;
 
-    private AlertDialog bgChosenner;
+    private AlertDialog bgChosen;
     private int bg;
     private AlertDialog rename_dialog;
 
@@ -73,11 +70,12 @@ public class SecondActivity extends AppCompatActivity {
         dDao = listDataBase.mTodoDeadLineDao();
         listDao = listDataBase.mTodoListDao();
         alarmManagerUtils = AlarmManagerUtils.getInstance(SecondActivity.this);
+        final ImageButton setting = findViewById(R.id.setting);
+        registerForContextMenu(setting);
 
         //设置标题
         Intent intent = getIntent();
         listName = intent.getStringExtra("name");
-        Log.d("log", "onCreate: " + listName);
         fid = intent.getIntExtra("id",-1);
         TextView title = findViewById(R.id._title);
         title.setText(listName);
@@ -93,20 +91,12 @@ public class SecondActivity extends AppCompatActivity {
                 finish();
             }
         });
-
         taskBuilder = new TaskBuilder();
-        ImageButton add = findViewById(R.id.create);
-        initialBGChosenner();
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.show();
-            }
-        });
+        initialBGinitialBGChosen();
         LoadTask();
     }
 
-    private void initialBGChosenner()
+    private void initialBGinitialBGChosen()
     {
         final AlertDialog.Builder customizeDialog =
                 new AlertDialog.Builder(this);
@@ -114,21 +104,21 @@ public class SecondActivity extends AppCompatActivity {
                 .inflate(R.layout.bg_chosen,null);
 
         customizeDialog.setView(dialogView);
-        bgChosenner = customizeDialog.create();
+        bgChosen = customizeDialog.create();
 
-        dialogView.findViewById(R.id.bg1).setOnClickListener(new BGChosenner());
-        dialogView.findViewById(R.id.bg2).setOnClickListener(new BGChosenner());
-        dialogView.findViewById(R.id.bg3).setOnClickListener(new BGChosenner());
-        dialogView.findViewById(R.id.bg4).setOnClickListener(new BGChosenner());
-        dialogView.findViewById(R.id.bg5).setOnClickListener(new BGChosenner());
+        dialogView.findViewById(R.id.bg1).setOnClickListener(new BGChosen());
+        dialogView.findViewById(R.id.bg2).setOnClickListener(new BGChosen());
+        dialogView.findViewById(R.id.bg3).setOnClickListener(new BGChosen());
+        dialogView.findViewById(R.id.bg4).setOnClickListener(new BGChosen());
+        dialogView.findViewById(R.id.bg5).setOnClickListener(new BGChosen());
     }
 
     private void ChosenBG()
     {
-        bgChosenner.show();
+        bgChosen.show();
     }
 
-    class BGChosenner implements View.OnClickListener
+    class BGChosen implements View.OnClickListener
     {
         @Override
         public void onClick(View v) {
@@ -140,11 +130,9 @@ public class SecondActivity extends AppCompatActivity {
                     listDao.setBG(fid,id);
                 }
             }).start();
-            bgChosenner.dismiss();
+            bgChosen.dismiss();
         }
     }
-
-
 
 
     //新建Task
@@ -154,6 +142,14 @@ public class SecondActivity extends AppCompatActivity {
         DatePicker datePicker;
         public TaskBuilder()
         {
+            ImageButton add = findViewById(R.id.create);
+            add.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.show();
+                }
+            });
+
             input = new EditText(SecondActivity.this);
 
             datePicker = new DatePicker();
@@ -163,15 +159,6 @@ public class SecondActivity extends AppCompatActivity {
             final View dialogView = LayoutInflater.from(SecondActivity.this)
                     .inflate(R.layout.input_task,null);
             Button confirm = dialogView.findViewById(R.id.cfbtn);
-            final Button repete = dialogView.findViewById(R.id.setRepate);
-
-            registerForContextMenu(repete);
-            repete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    repete.showContextMenu();
-                }
-            });
 
             input = dialogView.findViewById(R.id._1btn);
             customizeDialog.setView(dialogView);
@@ -211,16 +198,16 @@ public class SecondActivity extends AppCompatActivity {
                         TimePicker tp = datePicker.tp;
                         TodoDeadLine td = new TodoDeadLine(dp.getYear(),dp.getMonth(),dp.getDayOfMonth(),tp.getHour(),tp.getMinute());
                         task.deadLineID = (int)dDao.insert(td);
-
-                        long t = datePicker.t;
-                        task.noteDate = t;
+                        final long ms_per_day = 1000*3600*24;
+                        long ms = datePicker.ms;
+                        task.noteDate = ms;
                         long systemTime = System.currentTimeMillis();
-                        long zero = systemTime/(1000*3600*24)*(1000*3600*24) - TimeZone.getDefault().getRawOffset();
+                        long zero = systemTime/(ms_per_day)*(ms_per_day) - TimeZone.getDefault().getRawOffset();//当天时间的00:00
                         if(task.noteDate > zero)
                         {
-                            long delta = (t-zero)/(1000*3600*24);
+                            long delta = (ms-zero)/(ms_per_day);//输入时间据app开启时间的天数
 
-                            Log.d("dateTest", String.format("sys:%s noteDate:%s delta:%s",systemTime,t,delta));
+                            Log.d("dateTest", String.format("sys:%s noteDate:%s delta:%s",systemTime,ms,delta));
                             if(delta == 0)
                             {
                                 Log.d("dateTest", "今天");
@@ -234,14 +221,10 @@ public class SecondActivity extends AppCompatActivity {
                                 Log.d("dateTest", "本周");
                             }
                         }
-                        else
-                        {
-                            //今天
-                        }
                         task.id = (int)dao.insert(task);
-                        Log.d(TAG, "save" + task.name);
-                        PendingIntent pi= alarmManagerUtils.createPendingIntent(task.id,task.fid,task.deadLineID);
-                        alarmManagerUtils.StartPIWork(pi,dp.getYear(),dp.getMonth(),dp.getDayOfMonth(),tp.getHour(),tp.getMinute());
+                        PendingIntent pendingIntent= alarmManagerUtils.createPendingIntent(task.id,task.fid,task.deadLineID);
+                        //pendingIntent也是intent的一种，不过是延迟执行
+                        alarmManagerUtils.StartPIWork(pendingIntent,dp.getYear(),dp.getMonth(),dp.getDayOfMonth(),tp.getHour(),tp.getMinute());
                     }
                 }).start();
             }
@@ -255,6 +238,7 @@ public class SecondActivity extends AppCompatActivity {
                 }).start();
             }
             resetBtn();
+            input.setText("");
             dialog.dismiss();
         }
 
@@ -268,7 +252,7 @@ public class SecondActivity extends AppCompatActivity {
         {
             android.widget.DatePicker dp;
             TimePicker tp;
-            long t;
+            long ms;
             public DatePicker()
             {
                 final AlertDialog.Builder customizeDialog =
@@ -289,8 +273,8 @@ public class SecondActivity extends AppCompatActivity {
                         int dD = dp.getDayOfMonth();
                         Calendar calendar = Calendar.getInstance();
                         calendar.set(dY, dM, dD,tp.getHour(),tp.getMinute(),0);
-                        t = calendar.getTimeInMillis();
-                        btn_setdd.setText(String.format("%d年%d月%d日 到期",dY,dM,dD));
+                        ms = calendar.getTimeInMillis();
+                        btn_setdd.setText(String.format("%d年%d月%d日 到期",dY,dM+1,dD));
                     }
                 });
                 ddDialog = customizeDialog.create();
@@ -302,7 +286,6 @@ public class SecondActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                //todo 按照index排序
                 taskNames = dao.getAllInfo(fid);
 
                 taskFragment.tasks = taskNames;
@@ -327,40 +310,16 @@ public class SecondActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.second_option_menu, menu);
-        return true;
-    }
-
-    @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.repete_date_menu_layout,menu);
+        inflater.inflate(R.menu.second_option_menu,menu);
         super.onCreateContextMenu(menu, v, menuInfo);
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item)
-    {
-        boolean isrepte = true;
-        switch (item.getItemId())
-        {
-            case R.id.oneday:
-                long repeteTime = (long)24*60*60*1000;
-                break;
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.rename:
-                rename_dialog.show();
-                return true;
             case R.id.changeBG :
                 ChosenBG();
                 return true;
@@ -379,6 +338,7 @@ public class SecondActivity extends AppCompatActivity {
                         return o1.name.charAt(0) - o2.name.charAt(0);
                     }
                 });
+                taskFragment.adapter.notifyDataSetChanged();
                 return true;
             case R.id.deleteList:
                 new Thread(new Runnable() {

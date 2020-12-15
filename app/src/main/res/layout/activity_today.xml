@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:src="@drawable/abc_vector_test" />
+            android:src="?attr/actionModeCloseDrawable" />
 
         <TextView
             android:id="@+id/_title"

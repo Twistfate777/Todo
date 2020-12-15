@@ -33,10 +33,10 @@ public class MyReceiver extends BroadcastReceiver {
                 String taskName = task.name;
                 String comment = task.comment;
 
-                NotificationManager nm = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+                NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
                 String channelId = Double.toString( (Math.random()));
                 NotificationChannel channel = new NotificationChannel(channelId,"Todo", NotificationManager.IMPORTANCE_HIGH);
-                nm.createNotificationChannel(channel);
+                notificationManager.createNotificationChannel(channel);
                 Notification test = new NotificationCompat.Builder(context, channelId)
                         .setContentTitle(taskName)
                         .setContentText(comment)
@@ -44,7 +44,7 @@ public class MyReceiver extends BroadcastReceiver {
                         .setLargeIcon(BitmapFactory.decodeResource(context.getResources(),R.mipmap.logo_icon_foreground))
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT).build();
 
-                nm.notify((int)(Math.random() * 10000),test);
+                notificationManager.notify((int)(Math.random() * 10000),test);
 
                 task.deadLineID = -1;
                 dao.update(task);

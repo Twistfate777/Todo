@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    //新建List 的确定按钮 事件
+    //新建List 的确定按钮事件
     class ListBuilder implements DialogInterface.OnClickListener {
         AlertDialog dialog;
         EditText input;
