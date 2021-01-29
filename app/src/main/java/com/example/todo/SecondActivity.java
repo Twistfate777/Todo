@@ -330,6 +330,7 @@ public class SecondActivity extends AppCompatActivity {
                         return o1.name.length() - o2.name.length();
                     }
                 });
+                taskFragment.adapter.notifyDataSetChanged();
                 return true;
             case R.id.sortByStart:
                 taskNames.sort(new Comparator<TodoTask>() {
